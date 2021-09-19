@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 using Microsoft.Extensions.DependencyInjection;
 using SafariPark.Services.Abstractions;
 using SafariPark.Services;
 using SafariPark.Providers.Abstractions;
 using SafariPark.Providers;
+using SafariPark.Helpers;
 
 namespace SafariPark
 {
@@ -23,6 +25,7 @@ namespace SafariPark
                 .AddTransient<ISortService, SortService>()
                 .AddTransient<IAnimalProvider, AnimalProvider>()
                 .AddSingleton<IConfigService, ConfigService>()
+                .AddTransient<IComparer, Comparer>()
                 .AddTransient<IAnimalWeightService, AnimalWeightService>()
                 .AddTransient<Application>()
                 .BuildServiceProvider();

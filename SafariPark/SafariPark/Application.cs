@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 using SafariPark.Services.Abstractions;
 using SafariPark.Helpers;
 using SafariPark.Extensions;
@@ -16,7 +17,7 @@ namespace SafariPark
         private readonly IZooService _zooService;
         private readonly ICageService _cageService;
         private readonly ISortService _sortService;
-        private AnimalWeightComparer _animalWeightComparer;
+        private readonly IComparer _animalWeightComparer;
 
         public Application(IZooService zooService, ICageService cageService, ISortService sortService)
         {
