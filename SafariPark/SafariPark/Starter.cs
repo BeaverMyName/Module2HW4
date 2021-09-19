@@ -3,74 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using SafariPark.Services.Abstractions;
-using SafariPark.Helpers;
-using SafariPark.Extensions;
-using SafariPark.Models.Animals.Chords.FourLeggedAnimals.Mammals;
-using SafariPark.Models;
+using SafariPark.Services;
+using SafariPark.Providers.Abstractions;
+using SafariPark.Providers;
 
 namespace SafariPark
 {
     public class Starter
     {
-        private readonly IZooService _zooService;
-        private readonly ICageService _cageService;
-        private readonly ISortService _sortService;
-        private AnimalWeightComparer _animalWeightComparer;
+        private Application _application;
 
-        public Starter(IZooService zooService, ICageService cageService, ISortService sortService)
+        public void StartApplication()
         {
-            _cageService = cageService;
-            _sortService = sortService;
-            _zooService = zooService;
-            _animalWeightComparer = new AnimalWeightComparer();
-        }
+            var serviceProvider = new ServiceCollection()
+                .AddTransient<IZooService, ZooService>()
+                .AddTransient<ICageService, CageService>()
+                .AddTransient<ISortService, SortService>()
+                .AddTransient<IAnimalProvider, AnimalProvider>()
+                .AddSingleton<IConfigService, ConfigService>()
+                .AddTransient<IAnimalWeightService, AnimalWeightService>()
+                .AddTransient<Application>()
+                .BuildServiceProvider();
 
-        public void Run()
-        {
-            _cageService.CreateCage(10, 100, 5);
-
-            _zooService.SetRandomAnimalsToCage(_cageService, 10);
-
-            DisplayAnimals(_cageService.Cage.Animals);
-
-            var amountOfDifferentAnimals = _cageService.AmountOfDifferentAnimals;
-
-            DisplayObject(amountOfDifferentAnimals);
-
-            _sortService.SortByWeight(_cageService.Cage.Animals, _animalWeightComparer);
-
-            DisplayAnimals(_cageService.Cage.Animals);
-
-            var animal = _cageService.Cage.Animals.FindSpecificAnimal(typeof(Cat));
-
-            if (animal != null)
-            {
-                DisplayObject(animal.Name);
-            }
-        }
-
-        public void DisplayAnimals(Animal[] animals)
-        {
-            foreach (var animal in animals)
-            {
-                Console.WriteLine($"{animal.Name} : {animal.Weight} {animal.UnitWeight}");
-            }
-
-            DisplayIndent();
-        }
-
-        public void DisplayObject(object obj)
-        {
-            Console.WriteLine(obj);
-            DisplayIndent();
-        }
-
-        public void DisplayIndent()
-        {
-            Console.WriteLine();
-            Console.WriteLine("---------------------");
-            Console.WriteLine();
+            _application = serviceProvider.GetService<Application>();
+            _application.Run();
         }
     }
 }

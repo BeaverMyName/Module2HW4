@@ -6,9 +6,9 @@ namespace SafariPark
     {
         public static void Main(string[] args)
         {
-            ApplicationStart applicationStart = new ApplicationStart();
+            Starter starter = new Starter();
 
-            applicationStart.StartApplication();
+            starter.StartApplication();
         }
     }
 }
